@@ -16,3 +16,27 @@
 #    pipelines:
 #      traces:
 #        exporters: [spanmetrics, otlphttp/example]
+exporters: 
+  # otlp/http exporter to Dynatrace.  
+  otlphttp/dynatrace:  
+    endpoint: "$https://dyb8308h.sprint.dynatrace.com/api/v2/otlp"  
+    headers:  
+      Authorization: "Api-Token ZHQwYzAxLjVTNldCQ0lGNEdIU1ZSRTZHUlBPRVdSRS5UTzIySFBITENERkhWUTYzMzRaVlZIS0FOV1dZRkg3SU5DNkNJTzNKRVNFSUEzR0ZISFlNRDYzSTdBVlRWV1NV"  
+ 
+processors:  
+  cumulativetodelta:  
+  
+service:  
+  pipelines:  
+    traces/dynatrace:  
+      receivers: [otlp]  
+      processors: [batch]  
+      exporters: [otlphttp/dynatrace]  
+    metrics/dynatrace:  
+      receivers: [otlp, spanmetrics]  
+      processors: [batch, cumulativetodelta]  
+      exporters: [otlphttp/dynatrace]  
+    logs/dynatrace:  
+      receivers: [otlp]  
+      processors: [batch]  
+      exporters: [otlphttp/dynatrace]
